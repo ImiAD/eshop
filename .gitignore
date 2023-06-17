@@ -4,3 +4,4 @@ composer.lock
 /public/assets/libs
 /public/uploads
 /vendor
+index.php

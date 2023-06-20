@@ -15,4 +15,6 @@ abstract class BaseModel
 
         return $item;
     }
+
+    abstract public static function getTableName(): string;
 }

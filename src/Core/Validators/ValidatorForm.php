@@ -54,7 +54,7 @@ class ValidatorForm implements Validator
         return $this;
     }
 
-    public function except(...$values): self
+    public function except(string ...$values): self
     {
         foreach ($this->data as $key => $value) {
             if (in_array($key, $values)) {
@@ -73,10 +73,5 @@ class ValidatorForm implements Validator
     public function getErrors(): array
     {
         return $this->errors;
-    }
-
-    public function getMessage(): array
-    {
-        return $this->message;
     }
 }

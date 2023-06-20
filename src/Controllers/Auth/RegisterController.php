@@ -4,21 +4,22 @@ declare(strict_types=1);
 namespace App\Controllers\Auth;
 
 use App\Core\Base\Controller;
-use App\Core\Database\PDOBuilder;
+use App\Core\Config;
+use App\Core\Contracts\Service;
 use App\Core\Http\Request;
 use App\Core\Validators\ValidatorFile;
 use App\Core\Validators\ValidatorForm;
-use App\Repositories\CustomerRepository;
-use App\Services\CustomerService;
+use App\Models\BaseModel;
 
 class RegisterController extends Controller
 {
-    private CustomerService $service;
+    private Service $service;
+    private ?BaseModel $result = null;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, Config $config, Service $service)
     {
-        parent::__construct($request);
-        $this->service = new CustomerService(new CustomerRepository(PDOBuilder::getInstance()));
+        parent::__construct($request, $config);
+        $this->service = $service;
     }
 
     public function showRegisterForm(): string
@@ -26,7 +27,7 @@ class RegisterController extends Controller
         return $this->view->render('auth/register');
     }
 
-    public function register()
+    public function register(): void
     {
         if ($this->request->isPost()) {
             try {
@@ -38,6 +39,7 @@ class RegisterController extends Controller
             $result = $validator
                 ->load($this->request->post())
                 ->clear()
+//                ->except(...['email', 'password']) // или передавать аргументы просто как строки, а не массив строк
                 ->isEmpty()
                 ->isValidEmail()
                 ->toArray();
@@ -59,26 +61,31 @@ class RegisterController extends Controller
                 $this->redirect('auth/register');
             }
 
-            $result = $this->service->createCustomer($result);
+            $this->result = $this->service->createCustomer($result);
 
-            if (is_null($result)) {
-                $_SESSION['errors'] = ['error' => $validator->getMessage()['error_save']];
+            if (is_null($this->result)) {
+                $_SESSION['errors'] = ['error' => $this->config->getError('error_save')];
                 $this->redirect('/auth/login');
             }
 
-            $_SESSION['user'] = [
-                'id' => $result->getId(),
-                'first_name' => $result->getFirstName(),
-                'last_name' => $result->getLastName(),
-                'email' => $result->getEmail(),
-                'is_ban' => $result->getIsBan(),
-                'created_at' => $result->getCreatedAt(),
-                'updated_at' => $result->getUpdatedAt(),
-            ];
+            $this->saveUserInSession();
 
             $this->redirect('dashboard');
         }
 
         $this->redirect('/');
+    }
+
+    private function saveUserInSession(): void
+    {
+        $_SESSION['user'] = [
+            'id' => $this->result->getId(),
+            'first_name' => $this->result->getFirstName(),
+            'last_name' => $this->result->getLastName(),
+            'email' => $this->result->getEmail(),
+            'is_ban' => $this->result->getIsBan(),
+            'created_at' => $this->result->getCreatedAt(),
+            'updated_at' => $this->result->getUpdatedAt(),
+        ];
     }
 }

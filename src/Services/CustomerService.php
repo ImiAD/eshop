@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Core\Contracts\Service;
+use App\Helpers\PasswordHash;
 use App\Models\Customer;
 use App\Repositories\CustomerRepository;
 
-class CustomerService
+class CustomerService implements Service
 {
     private CustomerRepository $repository;
 
@@ -18,7 +20,7 @@ class CustomerService
     public function createCustomer(array $data): ?Customer
     {
         $params = array_merge($data, [
-            'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+            'password' => PasswordHash::make($data['password']),
             'is_ban' => '0',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
@@ -37,7 +39,7 @@ class CustomerService
             return null;
         }
 
-        if (!password_verify($data['password'], $result['password'])) {
+        if (!PasswordHash::verify($data['password'], $result['password'])) {
             return null;
         }
 

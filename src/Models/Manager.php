@@ -3,21 +3,22 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-class Customer  extends BaseModel
+class Manager extends BaseModel
 {
     protected int $id = 0;
-    protected string $firstName;
-    protected string $lastName;
+    protected string $userName;
     protected string $email;
     protected string $password;
     protected int $isBan;
     protected string $createdAt;
     protected string $updatedAt;
 
+    // Непонятно за что будет в дальнейшем отвечать базовая модель. Если от нее будут наследоваться только пользователи,
+    // то в нее нужно вынести схожие для всех пользователей свойства и в конструктор поместить их инициализацию.
+    // Если от модели baseModel будут наследоваться еще-кикие-то сущности, этого делать нельзя.
     public function __construct(array $data)
     {
-        $this->firstName = $data['first_name'];
-        $this->lastName = $data['last_name'];
+        $this->userName = $data['user_name'];
         $this->email = $data['email'];
         $this->password = $data['password'];
         $this->isBan = (int)$data['is_ban'];
@@ -27,7 +28,7 @@ class Customer  extends BaseModel
 
     public static function getTableName(): string
     {
-        return 'customers';
+        return 'manager';
     }
 
     public function getId(): int
@@ -35,14 +36,9 @@ class Customer  extends BaseModel
         return $this->id;
     }
 
-    public function getFirstName(): string
+    public function getUserName(): string
     {
-        return $this->firstName;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
+        return $this->userName;
     }
 
     public function getEmail(): string

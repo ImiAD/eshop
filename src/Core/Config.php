@@ -8,6 +8,7 @@ final class Config
     private static ?Config $instance = null;
     private array $messageData = [];
     private array $routes = [];
+    private array $const = [];
 
     public static function getInstance(): Config
     {
@@ -27,6 +28,7 @@ final class Config
     {
         $this->messageData = require __DIR__ . '/../../config/messages.php';
         $this->routes = require __DIR__ . '/../../config/routes.php';
+        $this->const = require __DIR__ . '/../../config/const.php';
     }
 
     public function messages(?string $key = null): array|string
@@ -37,5 +39,15 @@ final class Config
     public function getRoutes(): array
     {
         return $this->routes;
+    }
+
+    public function getError(string $key): string
+    {
+        return $this->messageData['form.messages']['errors'][$key];
+    }
+
+    public function getConst(): array
+    {
+        return $this->const;
     }
 }

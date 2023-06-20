@@ -9,6 +9,14 @@ return [
         'url' => '#^register$#',
         'controller' => 'App\\Controllers\\Auth\\RegisterController@register',
     ],
+//    [
+//        'url' => '#^register/customer$#',
+//        'controller' => 'App\\Controllers\\Auth\\RegisterCustomerController@register',
+//    ],
+//    [
+//        'url' => '#^register/manager$#',
+//        'controller' => 'App\\Controllers\\Auth\\RegisterManagerController@register',
+//    ],
     [
         'url' => '#^auth/login#',
         'controller' => 'App\\Controllers\\Auth\\LoginController@showLoginForm',

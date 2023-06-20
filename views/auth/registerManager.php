@@ -5,21 +5,13 @@
             <div class="alert alert-danger"><?= $_SESSION['errors']['error'] ?></div>
             <?php unset($_SESSION['errors']['error']) ?>
         <?php endif ?>
-        <form action="/register" method="POST" enctype="multipart/form-data">
+        <form action="/registerManager" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
-            <label for="first_name" class="form-label">Имя</label>
-            <input name="first_name" value="" type="text" class="form-control">
-            <?php if (!empty($_SESSION['errors']['first_name'])): ?>
-                <div class="alert alert-danger"><?= $_SESSION['errors']['first_name'] ?></div>
-                <?php unset($_SESSION['errors']['first_name']) ?>
-            <?php endif ?>
-        </div>
-        <div class="mb-3">
-            <label for="last_name" class="form-label">Фамилия</label>
-            <input name="last_name" type="text" value="" class="form-control">
-            <?php if (!empty($_SESSION['errors']['last_name'])): ?>
-                <div class="alert alert-danger"><?= $_SESSION['errors']['last_name'] ?></div>
-                <?php unset($_SESSION['errors']['last_name']) ?>
+            <label for="user_name" class="form-label">Имя</label>
+            <input name="user_name" value="" type="text" class="form-control">
+            <?php if (!empty($_SESSION['errors']['user_name'])): ?>
+                <div class="alert alert-danger"><?= $_SESSION['errors']['user_name'] ?></div>
+                <?php unset($_SESSION['errors']['user_name']) ?>
             <?php endif ?>
         </div>
         <div class="mb-3">

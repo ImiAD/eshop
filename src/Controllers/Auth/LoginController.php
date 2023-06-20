@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Auth;
 
 use App\Core\Base\Controller;
+use App\Core\Config;
 use App\Core\Database\PDOBuilder;
 use App\Core\Http\Request;
 use App\Core\Validators\ValidatorForm;
@@ -14,9 +15,9 @@ class LoginController extends Controller
 {
     private CustomerService $service;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, Config $config)
     {
-        parent::__construct($request);
+        parent::__construct($request, $config);
         $this->service = new CustomerService(new CustomerRepository(PDOBuilder::getInstance()));
     }
 
@@ -25,7 +26,7 @@ class LoginController extends Controller
         return $this->view->render('auth/login');
     }
 
-    public function login()
+    public function login(): void
     {
         if ($this->request->isPost()) {
             try {
@@ -51,8 +52,7 @@ class LoginController extends Controller
             $result = $this->service->findByIdCustomer($result);
 
             if (is_null($result)) {
-                // или тут лучше вызывать статику конфига?
-                $_SESSION['errors'] = ['error' => $validator->getMessage()['error_login_or_password']];
+                $_SESSION['errors'] = ['error' => $this->config->getError('error_login_or_password')];
                 $this->redirect('/auth/login');
             }
 
@@ -65,7 +65,7 @@ class LoginController extends Controller
                 'created_at' => $result->getCreatedAt(),
                 'updated_at' => $result->getUpdatedAt(),
             ];
-            $this->redirect('dashboard');
+            $this->redirect('/dashboard');
         }
 
         $this->redirect('/');

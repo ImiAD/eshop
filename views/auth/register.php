@@ -28,11 +28,6 @@
             <?php if (!empty($_SESSION['errors']['email'])): ?>
                     <div class="alert alert-danger"><?= $_SESSION['errors']['email'] ?></div>
                     <?php unset($_SESSION['errors']['email']) ?>
-            <?php else: ?>
-                <?php if (!empty($_SESSION['errors']['invalid_email'])): ?>
-                    <div class="alert alert-danger"><?= $_SESSION['errors']['invalid_email'] ?></div>
-                    <?php unset($_SESSION['errors']['invalid_email']) ?>
-                <?php endif ?>
             <?php endif?>
         </div>
         <div class="form-check form-check-inline">

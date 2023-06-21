@@ -35,7 +35,7 @@ class LoginController extends Controller
                 die($e->getMessage());
             }
 
-            $result = $validator
+            $credentials = $validator
                 ->load($this->request->post())
                 ->clear()
                 ->isEmpty()
@@ -49,21 +49,25 @@ class LoginController extends Controller
                 $this->redirect('/auth/login');
             }
 
-            $result = $this->service->findByIdCustomer($result);
+            $user = $this->service->findByIdCustomer($credentials);
 
-            if (is_null($result)) {
+            if (is_null($user)) {
+                $user = $this->service->findByIdManager($credentials);
+            }
+
+            if (is_null($user)) {
                 $_SESSION['errors'] = ['error' => $this->config->getError('error_login_or_password')];
                 $this->redirect('/auth/login');
             }
 
             $_SESSION['user'] = [
-                'id' => $result->getId(),
-                'first_name' => $result->getFirstName(),
-                'last_name' => $result->getLastName(),
-                'email' => $result->getEmail(),
-                'is_ban' => $result->getIsBan(),
-                'created_at' => $result->getCreatedAt(),
-                'updated_at' => $result->getUpdatedAt(),
+                'id' => $user->getId(),
+                'first_name' => $user->getFirstName(),
+                'last_name' => $user->getLastName(),
+                'email' => $user->getEmail(),
+                'is_ban' => $user->getIsBan(),
+                'created_at' => $user->getCreatedAt(),
+                'updated_at' => $user->getUpdatedAt(),
             ];
             $this->redirect('/dashboard');
         }

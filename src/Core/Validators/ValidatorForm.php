@@ -47,8 +47,8 @@ class ValidatorForm implements Validator
 
     public function isValidEmail(): self
     {
-        if (!filter_var($this->data['email'], FILTER_VALIDATE_EMAIL)) {
-            $this->errors['invalid_email'] = $this->message['invalid_email'];
+        if (empty($this->errors['email']) && !filter_var($this->data['email'], FILTER_VALIDATE_EMAIL)) {
+            $this->errors['email'] = $this->message['invalid_email'];
         }
 
         return $this;
@@ -56,6 +56,10 @@ class ValidatorForm implements Validator
 
     public function except(string ...$values): self
     {
+        if (count($values) !== count($values, COUNT_RECURSIVE)) {
+            $values = array_merge(...$values);
+        }
+
         foreach ($this->data as $key => $value) {
             if (in_array($key, $values)) {
                 unset($this->data[$key]);
